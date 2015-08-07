@@ -149,7 +149,7 @@ foreach ($releases as $release=>$includedpatches) {
 		<p class="text-muted credit">
 			This page was automatically updated <?= $hoursago ? "$hoursago hours, " : "" ?><?= $minago ?> minutes ago.<br />
 			Patches are copyright by <a href="http://magento.com">Magento</a>, this page is by <a href="http://fabrizioballiano.com">Fabrizio Balliano</a>.<br />
-			If you find any mistake in this list please <a href="mailto:fabrizio@fabrizioballiano.it">drop me a line</a>.
+			<a href="https://github.com/fballiano/magento-patches-finder" target="_blank">Source code here</a>, if you find any mistake in this list please <a href="mailto:fabrizio@fabrizioballiano.it">drop me a line</a>.
 		</p>
 	</div>
 	</nav>
