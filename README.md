@@ -1,4 +1,4 @@
-# magento-patches-finder
+# Magento Patches Finder
 Shows all the patches needed for all magento versions
 
 Use it here:
