@@ -1,14 +1,28 @@
 <?php
+$errors = [];
+$success = [];
+function refresh() {
+    return file_put_contents('download', file_get_contents('http://magentocommerce.com/download'));
+}
 
 require "simple_html_dom.php";
-$html = file_get_html('download');
 date_default_timezone_set('UTC');
 $lastmodification = time() - filemtime("download");
 $hoursago = (int)date("H", $lastmodification);
+if (0 < $hoursago) {
+    if (false === refresh()) {
+        $errors[] = 'Could not write "download" file. Please check its permissions!';
+    } else {
+        $lastmodification = time() - filemtime("download");
+        $hoursago = (int)date("H", $lastmodification);
+        $success[] = 'Updated Magento download information.';
+    }
+}
 $minago = (int)date("i", $lastmodification);
 
 $releases_patches = array();
 $releases = array();
+$html = file_get_html('download');
 foreach($html->find('.download-panes li', 1)->find('.download-releases .release-download') as $downloads) {
 	$release = trim($matches[1]);
 	$includedpatches = array();
@@ -108,7 +122,8 @@ foreach ($releases as $release=>$includedpatches) {
 			</select>
 		</label>
 		<br /><br />
-		
+		<?php if (count($errors)): ?><div class="patches alert alert-danger" style="display:block"><?php echo implode('<br />', $errors) ?></div><?php endif ?>
+		<?php if (count($success)): ?><div class="patches alert alert-success" style="display:block"><?php echo implode('<br />', $success) ?></div><?php endif ?>
 		<div class="patches alert alert-warning" style="display:block">
 			Thanks to some changes to formKey management on the magento.com/download page the direct download of the patches doesn't work anymore...<br /><br />
 			I'm thinking about a way to make it work again...
