@@ -10,7 +10,7 @@ $minago = (int)date("i", $lastmodification);
 $releases_patches = array();
 $releases = array();
 foreach($html->find('.download-panes li', 1)->find('.download-releases .release-download') as $downloads) {
-	$release = trim($matches[1]);
+	// $release = trim($matches[1]); FIXME
 	$includedpatches = array();
 	$tmp = (string)$downloads->innertext;
 	preg_match_all("/SUPEE-\d+/", $tmp, $includedpatches);
@@ -37,8 +37,11 @@ foreach($html->find('.download-releases') as $downloads) {
 		foreach ($patch->find("select option") as $patch_version) {
 			if ($i++ == 0) continue;
 			preg_match_all("(1\..\..\..|1\..\..)", $patch_version->innertext, $tmp);
+			if (!isset($tmp[0][0])) {
+				continue;
+			}
 			$start_version = $tmp[0][0];
-			$end_version = $tmp[0][1];
+			$end_version = isset($tmp[0][1]) ? $tmp[0][1] : $start_version;
 			if (!$end_version) $end_version = $start_version;
 			$patches[] = array(
 				$start_version,
