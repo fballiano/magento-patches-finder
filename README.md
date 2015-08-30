@@ -4,7 +4,7 @@ Shows all the patches needed for all magento versions
 Use it here:
 http://fabrizioballiano.net/magento-patches
 
-The "download" file it looks for it's prepared by a cron script I've running on my server, which is simply a wget of the magento's official download page (http://magentocommerce.com/download), I keep it just for performance reasons.
+The "download" file it looks for it's automatically downloaded and saved by the "index.php" script every hour, I keep it just for performance reasons.
 
 TODO:
 - recreate the direct download for the patches (can't host patches or distribute them, it's against Magento's license) and I don't want to use some sort of proxy system
