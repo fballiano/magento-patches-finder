@@ -24,7 +24,6 @@ $releases_patches = array();
 $releases = array();
 $html = file_get_html('download');
 foreach($html->find('.download-panes li', 1)->find('.download-releases .release-download') as $downloads) {
-	// $release = trim($matches[1]); FIXME
 	$includedpatches = array();
 	$tmp = (string)$downloads->innertext;
 	preg_match_all("/SUPEE-\d+/", $tmp, $includedpatches);
