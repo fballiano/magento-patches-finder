@@ -10,7 +10,7 @@ $minago = (int)date("i", $lastmodification);
 $releases_patches = array();
 $releases = array();
 foreach($html->find('.download-panes li', 1)->find('.download-releases .release-download') as $downloads) {
-	$release = trim($matches[1]);
+	// $release = trim($matches[1]); FIXME
 	$includedpatches = array();
 	$tmp = (string)$downloads->innertext;
 	preg_match_all("/SUPEE-\d+/", $tmp, $includedpatches);
@@ -37,8 +37,11 @@ foreach($html->find('.download-releases') as $downloads) {
 		foreach ($patch->find("select option") as $patch_version) {
 			if ($i++ == 0) continue;
 			preg_match_all("(1\..\..\..|1\..\..)", $patch_version->innertext, $tmp);
+			if (!isset($tmp[0][0])) {
+				continue;
+			}
 			$start_version = $tmp[0][0];
-			$end_version = $tmp[0][1];
+			$end_version = isset($tmp[0][1]) ? $tmp[0][1] : $start_version;
 			if (!$end_version) $end_version = $start_version;
 			$patches[] = array(
 				$start_version,
@@ -69,6 +72,30 @@ foreach ($releases as $release=>$includedpatches) {
 	}
 }
 
+$projects = [];
+if (file_exists('projects.php')) {
+    include 'projects.php';
+}
+
+function getShops($projects, $release) {
+    $shops = [];
+    foreach ($projects as $name => $info) {
+        if ($info['version'] === $release) {
+            $shops[] = $name;
+        }
+    }
+    return $shops;
+}
+
+function isRequiredPatch($patch, $release, $projects) {
+    foreach ($projects as $project) {
+        if ($project['version'] === $release && false === in_array($patch, $project['patches'])) {
+            return true;
+        }
+    }
+    return false;
+}
+
 ?><html>
 <head>
 <meta charset="utf-8">
@@ -89,6 +116,7 @@ foreach ($releases as $release=>$includedpatches) {
 	ul {padding-left: 20px}
 	li i {margin-right: 5px}
 	.navbar-fixed-bottom {padding-top: 5px}
+	.required {color: red}
 </style>
 </head>
 <body>
@@ -116,16 +144,18 @@ foreach ($releases as $release=>$includedpatches) {
 
 		<?php foreach ($releases as $release=>$includedpatches): ?>
 			<?php $patches = @$release_and_patches[$release] ?>
-			<div id="<?= str_replace(".", "_", $release) ?>" class="patches">
+			<?php $shops = getShops($projects, $release) ?>
+			<div id="<?= str_replace(".", "_", $release) ?>" class="patches<?php if (count($shops)): ?> project" style="display:block<?php endif ?>">
 				<?php if ($patches): ?>
 					<div class="panel panel-danger">
-						<div class="panel-heading"><strong>Magento <?= $release ?></strong> needs the following patches</div>
+						<div class="panel-heading"><strong>Magento <?php echo $release . (count($shops) ? ' (' . implode(', ', $shops) . ')' : '') ?></strong> needs the following patches</div>
 						<div class="panel-body">
 							<ul class="list-unstyled">
 								<?php foreach ($patches as $patch): ?>
 									<li>
 										<!--<a target="_blank" href="https://www.magentocommerce.com/products/downloads/magento/downloadFile/file_id/<?= $patch[2] ?>/file_category/<?= $patch[5] ?>/store_id/1/form_key/Ppyy4QcgxlSkYVHi" data-patchid="<?= $patch[2] ?>" data-catid="<?= $patch[5] ?>"><i class="glyphicon glyphicon-download-alt"></i> <strong><?= $patch[4] ?></strong>: <?= $patch[3] ?></a>-->
-										<i class="glyphicon glyphicon-download-alt"></i> <strong><?= $patch[4] ?></strong>: <?= $patch[3] ?>
+										<i class="glyphicon glyphicon-download-alt"></i>
+										<strong class="<?php if (isRequiredPatch($patch[4], $release, $projects)): ?>required<?php endif ?>"><?= $patch[4] ?></strong>: <?= $patch[3] ?>
 									</li>
 								<?php endforeach ?>
 							</ul>
@@ -160,6 +190,7 @@ foreach ($releases as $release=>$includedpatches) {
 		$("#releases").change(function () {
 			$(".patches").hide();
 			if ($("#releases").val()) $("#" + $("#releases").val().replace(/\./g, "_")).slideDown();
+			else $(".patches.project").show();
 		});
 	});
 	</script>
