@@ -4,6 +4,8 @@ $success = [];
 function refresh() {
     return file_put_contents('download', file_get_contents('http://magentocommerce.com/download'));
 }
+error_reporting(E_ALL);
+ini_set("errors_display", 1);
 
 function sort_by_patch_name($a, $b) {
 	$a = preg_replace(array("/^.*-/", "/\/.*$/"), "", $a[4]);
@@ -183,7 +185,7 @@ function isRequiredPatch($patch, $release, $projects) {
 
 		<?php foreach ($releases as $release=>$includedpatches): ?>
 			<?php $patches = @$release_and_patches[$release] ?>
-			<?php usort($patches, "sort_by_patch_name") ?>
+			<?php if ($patches) usort($patches, "sort_by_patch_name") ?>
 			<?php $shops = getShops($projects, $release) ?>
 			<div id="<?= str_replace(".", "_", $release) ?>" class="patches<?php if (count($shops)): ?> project" style="display:block<?php endif ?>">
 				<?php if ($patches): ?>
