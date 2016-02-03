@@ -37,6 +37,7 @@ foreach($html->find('.download-panes li', 1)->find('.download-releases .release-
 	}
 }
 $releases["1.0"] = array();
+krsort($releases);
 
 $patches = array();
 foreach($html->find('.download-releases') as $downloads) {
