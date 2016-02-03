@@ -5,6 +5,12 @@ function refresh() {
     return file_put_contents('download', file_get_contents('http://magentocommerce.com/download'));
 }
 
+function sort_by_patch_name($a, $b) {
+	$a = preg_replace(array("/^.*-/", "/\/.*$/"), "", $a[4]);
+	$b = preg_replace(array("/^.*-/", "/\/.*$/"), "", $b[4]);
+	return strcasecmp($a, $b);
+}
+
 require "simple_html_dom.php";
 date_default_timezone_set('UTC');
 $lastmodification = time() - filemtime("download");
@@ -69,6 +75,15 @@ foreach($html->find('.download-releases') as $downloads) {
 		}
 	}
 }
+
+$patches[] = array(
+	"1.9.1.0",
+	"1.9.1.999",
+	"512",
+	"PATCH_SUPEE-4829_EE_1.14.1.0_v1.sh (0.01 MB)",
+	"SUPEE-4829",
+	"203"
+);
 
 $release_and_patches = array();
 foreach ($releases as $release=>$includedpatches) {
@@ -168,6 +183,7 @@ function isRequiredPatch($patch, $release, $projects) {
 
 		<?php foreach ($releases as $release=>$includedpatches): ?>
 			<?php $patches = @$release_and_patches[$release] ?>
+			<?php usort($patches, "sort_by_patch_name") ?>
 			<?php $shops = getShops($projects, $release) ?>
 			<div id="<?= str_replace(".", "_", $release) ?>" class="patches<?php if (count($shops)): ?> project" style="display:block<?php endif ?>">
 				<?php if ($patches): ?>
