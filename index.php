@@ -26,10 +26,12 @@ $html = file_get_html('download');
 foreach($html->find('.download-panes li', 1)->find('.download-releases .release-download') as $downloads) {
 	$includedpatches = array();
 	$tmp = (string)$downloads->innertext;
+	if (preg_match("/(XMLConnect|Database Repair Tool)/", $tmp)) continue;
 	preg_match_all("/SUPEE-\d+/", $tmp, $includedpatches);
 	foreach ($downloads->find("strong") as $version) {
-		if (preg_match("/^ver (.+)/", $version->innertext, $matches)) {
-			$version = trim(str_replace("ver ", "", $version->innertext));
+		if (preg_match("/^ver (.+)/", trim(strip_tags($version->innertext)), $matches)) {
+			$version = trim(str_replace("ver ", "", strip_tags($version->innertext)));
+			if (substr($version, 0, 1) == 2) continue;
 			$releases[$version] = @$includedpatches[0];
 		}
 	}
@@ -45,14 +47,13 @@ foreach($html->find('.download-releases') as $downloads) {
 	foreach ($downloads->find(".release-download") as $patch) {
 		$i = 0;
 		$patch_name = $patch->find("strong")[0]->innertext;
+		$patch_name = trim(strip_tags($patch_name));
 		$cat_id = explode("_", $patch->find("select")[0]->id);
 		$cat_id = $cat_id[1];
 		foreach ($patch->find("select option") as $patch_version) {
 			if ($i++ == 0) continue;
 			preg_match_all("(1\..\..\..|1\..\..)", $patch_version->innertext, $tmp);
-			if (!isset($tmp[0][0])) {
-				continue;
-			}
+			if (!isset($tmp[0][0])) continue;
 			$start_version = $tmp[0][0];
 			$end_version = isset($tmp[0][1]) ? $tmp[0][1] : $start_version;
 			if (!$end_version) $end_version = $start_version;
@@ -151,6 +152,14 @@ function isRequiredPatch($patch, $release, $projects) {
 		<br /><br />
 		<?php if (count($errors)): ?><div class="patches alert alert-danger" style="display:block"><?php echo implode('<br />', $errors) ?></div><?php endif ?>
 		<?php if (count($success)): ?><div class="patches alert alert-success" style="display:block"><?php echo implode('<br />', $success) ?></div><?php endif ?>
+		<div class="patches alert alert-warning" style="display:block">
+			Patches are becoming too many and too big, upgrade your whole Magento installation instead of installing them.
+		</div>
+
+		<div class="patches alert alert-warning" style="display:block">
+			Magento 2 at the moment is not supported by this tool.
+		</div>
+
 		<div class="patches alert alert-warning" style="display:block">
 			Thanks to some changes to formKey management on the magento.com/download page the direct download of the patches doesn't work anymore...<br /><br />
 			I'm thinking about a way to make it work again...
