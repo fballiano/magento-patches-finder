@@ -4,8 +4,6 @@ $success = [];
 function refresh() {
     return file_put_contents('download', file_get_contents('http://magentocommerce.com/download'));
 }
-error_reporting(E_ALL);
-ini_set("errors_display", 1);
 
 function sort_by_patch_name($a, $b) {
 	$a = preg_replace(array("/^.*-/", "/\/.*$/"), "", $a[4]);
