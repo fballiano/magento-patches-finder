@@ -173,7 +173,7 @@ function isRequiredPatch($patch, $release, $projects) {
 		</div>
 
 		<div class="patches alert alert-warning" style="display:block">
-			Magento 2 at the moment is not supported by this tool.
+			Magento 2 at the moment is not supported by this tool, it's actually impossible to understand which M2 patch you should apply on a M2 version, <a target="_blank" href="http://magento.com/download">check the official info</a> by yourself.
 		</div>
 
 		<div class="patches alert alert-warning" style="display:block">
