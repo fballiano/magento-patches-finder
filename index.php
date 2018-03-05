@@ -29,7 +29,7 @@ $minago = (int)date("i", $lastmodification);
 $releases_patches = array();
 $releases = array();
 $html = file_get_html('download');
-foreach($html->find('.download-panes li', 1)->find('.download-releases .release-download') as $downloads) {
+foreach($html->find('.download-releases .release-download') as $downloads) {
 	$includedpatches = array();
 	$tmp = (string)$downloads->innertext;
 	if (preg_match("/(XMLConnect|Database Repair Tool)/", $tmp)) continue;
@@ -37,6 +37,7 @@ foreach($html->find('.download-panes li', 1)->find('.download-releases .release-
 	foreach ($downloads->find("strong") as $version) {
 		if (preg_match("/^ver (.+)/", trim(strip_tags($version->innertext)), $matches)) {
 			$version = trim(str_replace("ver ", "", strip_tags($version->innertext)));
+                        if (strpos($version, "later") !== false) continue;
 			if (substr($version, 0, 1) == 2) continue;
 			$releases[$version] = @$includedpatches[0];
 		}
