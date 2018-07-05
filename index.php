@@ -169,12 +169,9 @@ function isRequiredPatch($patch, $release, $projects) {
 		<br /><br />
 		<?php if (count($errors)): ?><div class="patches alert alert-danger" style="display:block"><?php echo implode('<br />', $errors) ?></div><?php endif ?>
 		<?php if (count($success)): ?><div class="patches alert alert-success" style="display:block"><?php echo implode('<br />', $success) ?></div><?php endif ?>
-		<div class="patches alert alert-warning" style="display:block">
-			Patches are becoming too many and too big, upgrade your whole Magento installation instead of installing them.
-		</div>
 
 		<div class="patches alert alert-warning" style="display:block">
-			Magento 2 is not supported by this tool, the information is not provided by Magento itself.
+			Magento 2 is not supported by this tool because patches/releases information is not provided by Magento.
 		</div>
 
 		<?php foreach ($releases as $release=>$includedpatches): ?>
