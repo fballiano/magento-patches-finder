@@ -174,12 +174,7 @@ function isRequiredPatch($patch, $release, $projects) {
 		</div>
 
 		<div class="patches alert alert-warning" style="display:block">
-			Magento 2 at the moment is not supported by this tool, it's actually impossible to understand which M2 patch you should apply on a M2 version, <a target="_blank" href="http://magento.com/download">check the official info</a> by yourself.
-		</div>
-
-		<div class="patches alert alert-warning" style="display:block">
-			Thanks to some changes to formKey management on the magento.com/download page the direct download of the patches doesn't work anymore...<br /><br />
-			I'm thinking about a way to make it work again...
+			Magento 2 is not supported by this tool, the information is not provided by Magento itself.
 		</div>
 
 		<?php foreach ($releases as $release=>$includedpatches): ?>
