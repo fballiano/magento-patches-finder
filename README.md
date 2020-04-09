@@ -1,6 +1,11 @@
 # Magento Patches Finder
 Shows all the patches needed for all magento versions
 
+## Update 2020
+Magento 1 is reaching EOL, with Magento 2 everything is different thus this project doesn't need to exist anymore, the repo will be archived as read only.
+
+## Original documentation
+
 Use it here:
 http://fabrizioballiano.net/magento-patches
 
